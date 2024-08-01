@@ -1,0 +1,15 @@
+export default {
+  primary: '#0891b2',
+  primaryMuted: '#bdf0fc',
+  background: '#F5F5F5',
+  cardBackground: '#0891b2',
+  chartCardBg:'#000000',
+  incomeAmount: '#0891b2',
+  expenseAmount:'#ff5000',
+  smcardBackground: '#ffffff',
+  icon: '#626D77',
+  boarderColor: '#0891b2',
+  dark: '#141518',
+  gray: '#626D77',
+  lightGray: '#D8DCE2',
+};
