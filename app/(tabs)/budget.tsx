@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 import { db, auth } from '@/src/services/firebase';
-import { collection, query, getDocs, addDoc } from 'firebase/firestore';
+import { collection, query, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import Colors from '@/constants/Colors';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { defaultStyles } from '@/constants/Styles';
 
 const BudgetScreen = () => {
   const [budgets, setBudgets] = useState<any[]>([]);
@@ -13,7 +15,9 @@ const BudgetScreen = () => {
   const [showModal, setShowModal] = useState(false);
   const [newBudgetName, setNewBudgetName] = useState('');
   const [newBudgetAmount, setNewBudgetAmount] = useState('');
-  const [newBudgetTime, setNewBudgetTime] = useState('');
+  const [newBudgetStartDate, setNewBudgetStartDate] = useState(new Date());
+  const [newBudgetEndDate, setNewBudgetEndDate] = useState(new Date());
+  const [editingBudget, setEditingBudget] = useState<any>(null);
 
   useEffect(() => {
     const fetchBudgets = async (userId: string) => {
@@ -70,86 +74,133 @@ const BudgetScreen = () => {
     try {
       const user = auth.currentUser;
       if (user) {
-        await addDoc(collection(db, 'Users', user.uid, 'Budgets'), {
-          name: newBudgetName,
-          targetAmount: parseFloat(newBudgetAmount),
-          time: newBudgetTime,
-          spent: 0, // Initial spent amount
-        });
+        if (editingBudget) {
+          await updateDoc(doc(db, 'Users', user.uid, 'Budgets', editingBudget.id), {
+            name: newBudgetName,
+            targetAmount: parseFloat(newBudgetAmount),
+            startDate: newBudgetStartDate,
+            endDate: newBudgetEndDate,
+          });
+        } else {
+          await addDoc(collection(db, 'Users', user.uid, 'Budgets'), {
+            name: newBudgetName,
+            targetAmount: parseFloat(newBudgetAmount),
+            startDate: newBudgetStartDate,
+            endDate: newBudgetEndDate,
+          });
+        }
         setShowModal(false);
         setNewBudgetName('');
         setNewBudgetAmount('');
-        setNewBudgetTime('');
+        setNewBudgetStartDate(new Date());
+        setNewBudgetEndDate(new Date());
+        setEditingBudget(null);
       }
     } catch (error) {
-      console.error('Error adding new budget:', error);
+      console.error('Error adding/updating budget:', error);
+    }
+  };
+
+  const editBudget = (budget: any) => {
+    setEditingBudget(budget);
+    setNewBudgetName(budget.name);
+    setNewBudgetAmount(budget.targetAmount.toString());
+    setNewBudgetStartDate(budget.startDate.toDate());
+    setNewBudgetEndDate(budget.endDate.toDate());
+    setShowModal(true);
+  };
+
+  const deleteBudget = async (budgetId: string) => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        await deleteDoc(doc(db, 'Users', user.uid, 'Budgets', budgetId));
+      }
+    } catch (error) {
+      console.error('Error deleting budget:', error);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.summaryContainer}>
-        <View style={styles.summaryBox}>
+    <View style={[defaultStyles.container, localStyles.container]}>
+      <View style={localStyles.summaryContainer}>
+        <View style={localStyles.summaryBox}>
           <MaterialIcons name="attach-money" size={24} color="green" />
-          <Text style={styles.summaryTitle}>Income</Text>
-          <Text style={styles.summaryAmount}>+${income.toFixed(2)}</Text>
+          <Text style={localStyles.summaryTitle}>Income</Text>
+          <Text style={localStyles.summaryAmount}>+${income.toFixed(2)}</Text>
         </View>
-        <View style={styles.summaryBox}>
+        <View style={localStyles.summaryBox}>
           <MaterialIcons name="money-off" size={24} color="red" />
-          <Text style={styles.summaryTitle}>Expense</Text>
-          <Text style={styles.summaryAmount}>-${expenses.toFixed(2)}</Text>
+          <Text style={localStyles.summaryTitle}>Expense</Text>
+          <Text style={localStyles.summaryAmount}>-${expenses.toFixed(2)}</Text>
         </View>
       </View>
       <FlatList
         data={budgets}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.budgetItem}>
-            <Text style={styles.budgetName}>{item.name || 'Unnamed Budget'}</Text>
-            <Text style={styles.budgetAmount}>${(item.targetAmount ?? 0).toFixed(2)}</Text>
-            <Text style={styles.budgetTime}>{item.time || 'No time specified'}</Text>
-            <Text style={styles.budgetSpent}>Total Spent [${(item.spent ?? 0).toFixed(2)}]</Text>
-          </TouchableOpacity>
+          <View style={localStyles.budgetItem}>
+            <View style={localStyles.budgetDetails}>
+              <Text style={localStyles.budgetName}>{item.name || 'Unnamed Budget'}</Text>
+              <Text style={localStyles.budgetAmount}>${(item.targetAmount ?? 0).toFixed(2)}</Text>
+              <Text style={localStyles.budgetTime}>Start: {item.startDate.toDate().toLocaleDateString()}</Text>
+              <Text style={localStyles.budgetTime}>End: {item.endDate.toDate().toLocaleDateString()}</Text>
+            </View>
+            <View style={localStyles.actions}>
+              <TouchableOpacity onPress={() => editBudget(item)}>
+                <FontAwesome name="edit" size={24} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => deleteBudget(item.id)}>
+                <FontAwesome name="trash" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          </View>
         )}
       />
-      <TouchableOpacity style={styles.floatingButton} onPress={() => setShowModal(true)}>
+      <TouchableOpacity style={localStyles.floatingButton} onPress={() => setShowModal(true)}>
         <FontAwesome name="plus" size={30} color="#fff" />
       </TouchableOpacity>
       <Modal visible={showModal} animationType="slide">
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>Create New Budget</Text>
+        <View style={defaultStyles.container}>
+          <Text style={localStyles.modalTitle}>{editingBudget ? 'Edit Budget' : 'Create New Budget'}</Text>
           <TextInput
-            style={styles.input}
+            style={localStyles.input}
             placeholder="Budget Name"
             value={newBudgetName}
             onChangeText={setNewBudgetName}
           />
           <TextInput
-            style={styles.input}
+            style={localStyles.input}
             placeholder="Budget Amount"
             value={newBudgetAmount}
             onChangeText={setNewBudgetAmount}
             keyboardType="numeric"
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Budget Time"
-            value={newBudgetTime}
-            onChangeText={setNewBudgetTime}
+          <Text style={localStyles.label}>Start Date</Text>
+          <DateTimePicker
+            value={newBudgetStartDate}
+            mode="date"
+            display="default"
+            onChange={(event, date) => date && setNewBudgetStartDate(date)}
           />
-          <Button title="Add Budget" onPress={addNewBudget} />
-          <Button title="Cancel" onPress={() => setShowModal(false)} />
+          <Text style={localStyles.label}>End Date</Text>
+          <DateTimePicker
+            value={newBudgetEndDate}
+            mode="date"
+            display="default"
+            onChange={(event, date) => date && setNewBudgetEndDate(date)}
+          />
+          <Button title={editingBudget ? 'Update Budget' : 'Add Budget'} onPress={addNewBudget} />
+          <Button title="Cancel" onPress={() => { setShowModal(false); setEditingBudget(null); }} />
         </View>
       </Modal>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: Colors.background,
+    padding: 16,
   },
   summaryContainer: {
     flexDirection: 'row',
@@ -178,6 +229,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  budgetDetails: {
+    flex: 1,
   },
   budgetName: {
     fontSize: 16,
@@ -185,48 +242,58 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   budgetAmount: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 14,
     color: '#fff',
-    marginVertical: 5,
   },
   budgetTime: {
-    fontSize: 14,
-    color: '#fff',
+    fontSize: 12,
+    color: '#ddd',
   },
-  budgetSpent: {
-    fontSize: 14,
-    color: '#fff',
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: 60,
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 30,
-    right: 30,
+    right: 20,
+    bottom: 20,
     backgroundColor: Colors.primary,
     borderRadius: 30,
     width: 60,
     height: 60,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 100,
-  },
-  modalContainer: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
+    marginBottom: 90,
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginTop: 50,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    backgroundColor: '#fff',
     padding: 10,
-    marginBottom: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  button: {
+    padding: 10,
+    height: 60,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
   },
 });
 
