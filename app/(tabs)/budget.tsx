@@ -27,7 +27,13 @@ const BudgetScreen = () => {
 
         const fetchedBudgets: any[] = [];
         budgetsSnapshot.forEach((doc) => {
-          fetchedBudgets.push({ id: doc.id, ...doc.data() });
+          const data = doc.data();
+          fetchedBudgets.push({
+            id: doc.id,
+            ...data,
+            startDate: data.startDate.toDate(),
+            endDate: data.endDate.toDate(),
+          });
         });
 
         setBudgets(fetchedBudgets);
@@ -74,6 +80,7 @@ const BudgetScreen = () => {
     try {
       const user = auth.currentUser;
       if (user) {
+        let budgetId: string;
         if (editingBudget) {
           await updateDoc(doc(db, 'Users', user.uid, 'Budgets', editingBudget.id), {
             name: newBudgetName,
@@ -81,14 +88,34 @@ const BudgetScreen = () => {
             startDate: newBudgetStartDate,
             endDate: newBudgetEndDate,
           });
+          budgetId = editingBudget.id;
         } else {
-          await addDoc(collection(db, 'Users', user.uid, 'Budgets'), {
+          const docRef = await addDoc(collection(db, 'Users', user.uid, 'Budgets'), {
             name: newBudgetName,
             targetAmount: parseFloat(newBudgetAmount),
             startDate: newBudgetStartDate,
             endDate: newBudgetEndDate,
           });
+          budgetId = docRef.id;
         }
+
+        // Update the local state immediately
+        const newBudget = {
+          id: budgetId,
+          name: newBudgetName,
+          targetAmount: parseFloat(newBudgetAmount),
+          startDate: newBudgetStartDate,
+          endDate: newBudgetEndDate,
+        };
+
+        if (editingBudget) {
+          setBudgets((prevBudgets) =>
+            prevBudgets.map((budget) => (budget.id === budgetId ? newBudget : budget))
+          );
+        } else {
+          setBudgets((prevBudgets) => [...prevBudgets, newBudget]);
+        }
+
         setShowModal(false);
         setNewBudgetName('');
         setNewBudgetAmount('');
@@ -105,8 +132,8 @@ const BudgetScreen = () => {
     setEditingBudget(budget);
     setNewBudgetName(budget.name);
     setNewBudgetAmount(budget.targetAmount.toString());
-    setNewBudgetStartDate(budget.startDate.toDate());
-    setNewBudgetEndDate(budget.endDate.toDate());
+    setNewBudgetStartDate(budget.startDate);
+    setNewBudgetEndDate(budget.endDate);
     setShowModal(true);
   };
 
@@ -115,6 +142,8 @@ const BudgetScreen = () => {
       const user = auth.currentUser;
       if (user) {
         await deleteDoc(doc(db, 'Users', user.uid, 'Budgets', budgetId));
+        // Update the local state immediately
+        setBudgets((prevBudgets) => prevBudgets.filter((budget) => budget.id !== budgetId));
       }
     } catch (error) {
       console.error('Error deleting budget:', error);
@@ -143,8 +172,8 @@ const BudgetScreen = () => {
             <View style={localStyles.budgetDetails}>
               <Text style={localStyles.budgetName}>{item.name || 'Unnamed Budget'}</Text>
               <Text style={localStyles.budgetAmount}>${(item.targetAmount ?? 0).toFixed(2)}</Text>
-              <Text style={localStyles.budgetTime}>Start: {item.startDate.toDate().toLocaleDateString()}</Text>
-              <Text style={localStyles.budgetTime}>End: {item.endDate.toDate().toLocaleDateString()}</Text>
+              <Text style={localStyles.budgetTime}>Start: {item.startDate.toLocaleDateString()}</Text>
+              <Text style={localStyles.budgetTime}>End: {item.endDate.toLocaleDateString()}</Text>
             </View>
             <View style={localStyles.actions}>
               <TouchableOpacity onPress={() => editBudget(item)}>
@@ -176,22 +205,38 @@ const BudgetScreen = () => {
             onChangeText={setNewBudgetAmount}
             keyboardType="numeric"
           />
-          <Text style={localStyles.label}>Start Date</Text>
-          <DateTimePicker
-            value={newBudgetStartDate}
-            mode="date"
-            display="default"
-            onChange={(event, date) => date && setNewBudgetStartDate(date)}
-          />
-          <Text style={localStyles.label}>End Date</Text>
-          <DateTimePicker
-            value={newBudgetEndDate}
-            mode="date"
-            display="default"
-            onChange={(event, date) => date && setNewBudgetEndDate(date)}
-          />
-          <Button title={editingBudget ? 'Update Budget' : 'Add Budget'} onPress={addNewBudget} />
-          <Button title="Cancel" onPress={() => { setShowModal(false); setEditingBudget(null); }} />
+          <View style={localStyles.datePickerContainer}>
+            <Text style={localStyles.label}>Start Date</Text>
+            <DateTimePicker
+              value={newBudgetStartDate}
+              mode="date"
+              display="default"
+              onChange={(event, date) => date && setNewBudgetStartDate(date)}
+              style={localStyles.datePicker}
+            />
+          </View>
+          <View style={localStyles.datePickerContainer}>
+            <Text style={localStyles.label}>End Date</Text>
+            <DateTimePicker
+              value={newBudgetEndDate}
+              mode="date"
+              display="default"
+              onChange={(event, date) => date && setNewBudgetEndDate(date)}
+              style={localStyles.datePicker}
+            />
+          </View>
+          <TouchableOpacity
+            style={[defaultStyles.pillButton, { backgroundColor: Colors.primary, marginTop: 20 }]}
+            onPress={addNewBudget}
+          >
+            <Text style={defaultStyles.buttonText}>{editingBudget ? 'Update Budget' : 'Add Budget'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[defaultStyles.pillButton, { backgroundColor: Colors.gray, marginTop: 10 }]}
+            onPress={() => { setShowModal(false); setEditingBudget(null); }}
+          >
+            <Text style={defaultStyles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
     </View>
@@ -258,7 +303,7 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 20,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.dark,
     borderRadius: 30,
     width: 60,
     height: 60,
@@ -274,26 +319,21 @@ const localStyles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#fff',
-    padding: 10,
+    padding: 20,
     borderRadius: 5,
     marginBottom: 10,
     fontSize: 16,
   },
-  button: {
-    padding: 10,
-    height: 60,
-    borderRadius: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '500',
-  },
   label: {
     fontSize: 16,
     marginBottom: 5,
+  },
+  datePickerContainer: {
+    marginBottom: 10,
+  },
+  datePicker: {
+    backgroundColor: '#fff',
+    borderRadius: 5,
   },
 });
 
