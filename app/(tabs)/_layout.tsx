@@ -42,7 +42,7 @@ export default function TabLayout () {
                     title: 'Add',
                     headerTitle: 'Add Transaction',
                     headerShadowVisible: false,
-                    headerStyle: { backgroundColor: Colors.background },
+                    headerStyle: { backgroundColor: Colors.smcardBackground },
                     
                     headerLeft: () => (
                       <Link href={'(tabs)/home'} asChild>
@@ -58,18 +58,42 @@ export default function TabLayout () {
             <Tabs.Screen
                 name="budget"
                 options={
-                    {
-                    title: 'Budget',
-                    }
-                }
+                  {
+                  title: 'Budget',
+                  headerTitle: 'Budget',
+                  headerShadowVisible: false,
+                  headerStyle: { backgroundColor: Colors.smcardBackground },
+                  
+                  headerLeft: () => (
+                    <Link href={'(tabs)/home'} asChild>
+                      <TouchableOpacity>
+                        <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} style ={{paddingLeft:15}} />
+                      </TouchableOpacity>
+                    </Link>
+                  ),
+
+                  }
+              }
             />
             <Tabs.Screen
                 name="profile"
                 options={
-                    {
-                    title: 'Profile',
-                    }
-                }
+                  {
+                  title: 'Profile',
+                  headerTitle: 'Profile',
+                  headerShadowVisible: false,
+                  headerStyle: { backgroundColor: Colors.smcardBackground },
+                  
+                  headerLeft: () => (
+                    <Link href={'(tabs)/home'} asChild>
+                      <TouchableOpacity>
+                        <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} style ={{paddingLeft:15}} />
+                      </TouchableOpacity>
+                    </Link>
+                  ),
+
+                  }
+              }
             />
    </Tabs>
    
