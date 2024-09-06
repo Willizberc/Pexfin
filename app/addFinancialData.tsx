@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.primary,
     },
     buttonText: {
-        color: Colors.white,
+        color: Colors.smcardBackground,
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',

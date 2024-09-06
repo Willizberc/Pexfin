@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "my-finance-app",
-    "slug": "my-finance-app",
+    "name": "pexfin",
+    "slug": "pexfin",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

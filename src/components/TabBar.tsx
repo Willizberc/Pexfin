@@ -1,4 +1,4 @@
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
@@ -16,7 +16,7 @@ const TabBar = ({ state, descriptors, navigation }) => {
   const icons: { [key: string]: (props: any) => JSX.Element } = {
     home: (props: any) => <AntDesign name="home" size={26} color={greyColor} {...props} />,
     addTransactions: (props: any) => <AntDesign name="pluscircleo" size={26} color={greyColor} {...props} />,
-    budget: (props: any) => <FontAwesome name="bar-chart" size={26} color={greyColor} {...props} />,
+    budget: (props: any) => <MaterialCommunityIcons name="clipboard-list-outline"  size={26} color={greyColor} {...props} />,
     profile: (props: any) => <AntDesign name="user" size={26} color={greyColor} {...props} />,
   }
 

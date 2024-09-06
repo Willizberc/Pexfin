@@ -43,7 +43,7 @@ export default function RootLayout() {
             headerLeft: () => (
                       <Link href={'(tabs)/home'} asChild>
                         <TouchableOpacity>
-                          <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} style ={{paddingLeft:15}} />
+                          <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} />
                         </TouchableOpacity>
                       </Link>
                     ),
@@ -59,7 +59,23 @@ export default function RootLayout() {
             headerLeft: () => (
                       <Link href={'(tabs)/home'} asChild>
                         <TouchableOpacity>
-                          <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} style ={{paddingLeft:15}} />
+                          <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} />
+                        </TouchableOpacity>
+                      </Link>
+                    ),
+          }} />
+        <Stack.Screen 
+        name="screens/ChatbotScreen" 
+        options={{
+          title: '',
+          headerTitle: 'PexBot',
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: Colors.background },
+                    
+            headerLeft: () => (
+                      <Link href={'(tabs)/home'} asChild>
+                        <TouchableOpacity>
+                          <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} />
                         </TouchableOpacity>
                       </Link>
                     ),
