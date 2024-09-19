@@ -21,7 +21,8 @@ export const defaultStyles = StyleSheet.create({
   textLink: {
     color: Colors.primary,
     fontSize: 18,
-    fontWeight: '500',
+    textAlign: 'center',
+    // fontWeight: '500',
   },
   descriptionText: {
     fontSize: 18,

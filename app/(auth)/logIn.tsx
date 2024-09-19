@@ -1,10 +1,10 @@
 import { defaultStyles } from "@/constants/Styles";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import React, { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import Colors from "@/constants/Colors";
 import { Link, useRouter } from "expo-router";
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from "../../src/services/firebase"; // Adjusted import path
 
 const Page = () => {
@@ -14,6 +14,7 @@ const Page = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const router = useRouter();
 
+    // Function to handle user log in
     const onlogIn = async () => {
         try {
             setErrorMessage(''); // Clear previous error messages
@@ -23,10 +24,26 @@ const Page = () => {
             const user = userCredential.user;
 
             // Redirect to the home screen or any other screen
-            router.replace('(tabs)/home');
+            router.replace('/(tabs)/home');
         } catch (error) {
             console.error('Log In Error:', error);
             setErrorMessage('Invalid Credentials. Please Try Again'); // Set error message
+        }
+    };
+
+    // Function to handle password reset
+    const onForgotPassword = async () => {
+        if (!email) {
+            Alert.alert('Error', 'Please enter your email to reset the password.');
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            Alert.alert('Success', 'A password reset email has been sent to your email address.');
+        } catch (error) {
+            console.error('Password Reset Error:', error);
+            Alert.alert('Error', 'Unable to send password reset email. Please check the email address.');
         }
     };
 
@@ -61,11 +78,18 @@ const Page = () => {
                             onChangeText={setPassword}
                         />
                     </View>
+
+                    {/* Forgot Password Link */}
+                    <TouchableOpacity onPress={onForgotPassword}>
+                        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                    </TouchableOpacity>
+
                     <Link href={'/signUp'} replace asChild>
                         <TouchableOpacity>
                             <Text style={defaultStyles.textLink}>Create an account. SignUp</Text>
                         </TouchableOpacity>
                     </Link>
+
                     <View style={{ flex: 1 }} />
                     <TouchableOpacity
                         style={[
@@ -120,6 +144,12 @@ const styles = StyleSheet.create({
         color: 'red',
         marginBottom: 20,
         textAlign: 'center',
+    },
+    forgotPasswordText: {
+        color: Colors.primary,
+        textAlign: 'center',
+        marginBottom: 20,
+        fontSize: 18,
     },
 });
 

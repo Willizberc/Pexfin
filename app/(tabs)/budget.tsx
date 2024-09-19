@@ -156,12 +156,12 @@ const BudgetScreen = () => {
         <View style={localStyles.summaryBox}>
           <MaterialIcons name="attach-money" size={24} color="green" />
           <Text style={localStyles.summaryTitle}>Income</Text>
-          <Text style={localStyles.summaryAmount}>+${income.toFixed(2)}</Text>
+          <Text style={localStyles.summaryAmount}>+${income.toLocaleString()}</Text>
         </View>
         <View style={localStyles.summaryBox}>
           <MaterialIcons name="money-off" size={24} color="red" />
           <Text style={localStyles.summaryTitle}>Expense</Text>
-          <Text style={localStyles.summaryAmount}>-${expenses.toFixed(2)}</Text>
+          <Text style={localStyles.summaryAmount}>-${expenses.toLocaleString()}</Text>
         </View>
       </View>
       <FlatList
@@ -171,7 +171,7 @@ const BudgetScreen = () => {
           <View style={localStyles.budgetItem}>
             <View style={localStyles.budgetDetails}>
               <Text style={localStyles.budgetName}>{item.name || 'Unnamed Budget'}</Text>
-              <Text style={localStyles.budgetAmount}>${(item.targetAmount ?? 0).toFixed(2)}</Text>
+              <Text style={localStyles.budgetAmount}>${(item.targetAmount ?? 0).toLocaleString()}</Text>
               <Text style={localStyles.budgetTime}>Start: {item.startDate.toLocaleDateString()}</Text>
               <Text style={localStyles.budgetTime}>End: {item.endDate.toLocaleDateString()}</Text>
             </View>

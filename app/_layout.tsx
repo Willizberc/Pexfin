@@ -41,7 +41,7 @@ export default function RootLayout() {
           headerStyle: { backgroundColor: Colors.background },
                     
             headerLeft: () => (
-                      <Link href={'(tabs)/home'} asChild>
+                      <Link href={'/(tabs)/home'} asChild>
                         <TouchableOpacity>
                           <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} />
                         </TouchableOpacity>
@@ -57,7 +57,7 @@ export default function RootLayout() {
           headerStyle: { backgroundColor: Colors.background },
                     
             headerLeft: () => (
-                      <Link href={'(tabs)/home'} asChild>
+                      <Link href={'/(tabs)/home'} asChild>
                         <TouchableOpacity>
                           <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} />
                         </TouchableOpacity>
@@ -73,7 +73,23 @@ export default function RootLayout() {
           headerStyle: { backgroundColor: Colors.background },
                     
             headerLeft: () => (
-                      <Link href={'(tabs)/home'} asChild>
+                      <Link href={'/(tabs)/home'} asChild>
+                        <TouchableOpacity>
+                          <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} />
+                        </TouchableOpacity>
+                      </Link>
+                    ),
+          }} />
+        <Stack.Screen 
+        name="screens/help" 
+        options={{
+          title: '',
+          headerTitle: 'Help',
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: Colors.background },
+                    
+            headerLeft: () => (
+                      <Link href={'/(tabs)/home'} asChild>
                         <TouchableOpacity>
                           <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} />
                         </TouchableOpacity>
@@ -93,7 +109,7 @@ export default function RootLayout() {
               </TouchableOpacity>
             ),
             headerRight: () => (
-              <Link href={'(tabs)/help'} asChild>
+              <Link href={'/screens/help'} asChild>
                 <TouchableOpacity>
                   <Ionicons name="help-circle-outline" size={34} color={Colors.dark} />
                 </TouchableOpacity>
@@ -128,13 +144,6 @@ export default function RootLayout() {
               <TouchableOpacity onPress={router.back}>
                 <Ionicons name="arrow-back" size={34} color={Colors.dark} />
               </TouchableOpacity>
-            ),
-            headerRight: () => (
-              <Link href={'(tabs)/help'} asChild>
-                <TouchableOpacity>
-                  <Ionicons name="help-circle-outline" size={34} color={Colors.dark} />
-                </TouchableOpacity>
-              </Link>
             ),
           }}
         />

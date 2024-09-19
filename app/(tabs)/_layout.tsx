@@ -42,14 +42,14 @@ export default function TabLayout() {
           headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.background },
           headerLeft: () => (
-            <Link href={'(tabs)/help'} asChild>
+            <Link href={'/screens/help'} asChild>
               <TouchableOpacity>
                 <Ionicons name="help-circle-outline" size={34} color={Colors.dark} style={{ paddingLeft: 15 }} />
               </TouchableOpacity>
             </Link>
           ),
           headerRight: () => (
-            <Link href={'screens/ChatbotScreen'} asChild>
+            <Link href={'/screens/ChatbotScreen'} asChild>
               <TouchableOpacity>
                 <View>
                   <FontAwesome6 name="robot" size={34} color={Colors.dark} style={{ paddingRight: 15 }} />
@@ -67,7 +67,7 @@ export default function TabLayout() {
           headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.smcardBackground },
           headerLeft: () => (
-            <Link href={'(tabs)/home'} asChild>
+            <Link href={'/(tabs)/home'} asChild>
               <TouchableOpacity>
                 <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} style={{ paddingLeft: 15 }} />
               </TouchableOpacity>
@@ -83,7 +83,7 @@ export default function TabLayout() {
           headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.smcardBackground },
           headerLeft: () => (
-            <Link href={'(tabs)/home'} asChild>
+            <Link href={'/(tabs)/home'} asChild>
               <TouchableOpacity>
                 <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} style={{ paddingLeft: 15 }} />
               </TouchableOpacity>
@@ -99,7 +99,7 @@ export default function TabLayout() {
           headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.smcardBackground },
           headerLeft: () => (
-            <Link href={'(tabs)/home'} asChild>
+            <Link href={'/(tabs)/home'} asChild>
               <TouchableOpacity>
                 <Ionicons name="arrow-back-outline" size={34} color={Colors.dark} style={{ paddingLeft: 15 }} />
               </TouchableOpacity>

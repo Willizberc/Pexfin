@@ -165,8 +165,8 @@ const ProfileScreen = () => {
           <TouchableOpacity style={localStyles.button} onPress={handleChangePassword}>
             <Text style={localStyles.buttonText}>Change Password</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={localStyles.button} onPress={() => setPasswordModalVisible(false)}>
-            <Text style={localStyles.buttonText}>Cancel</Text>
+          <TouchableOpacity style={localStyles.cancelButton} onPress={() => setPasswordModalVisible(false)}>
+            <Text style={localStyles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -185,8 +185,8 @@ const ProfileScreen = () => {
           <TouchableOpacity style={localStyles.button} onPress={handleAddFinancialData}>
             <Text style={localStyles.buttonText}>Add</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={localStyles.button} onPress={() => setFinancialDataModalVisible(false)}>
-            <Text style={localStyles.buttonText}>Cancel</Text>
+          <TouchableOpacity style={localStyles.cancelButton} onPress={() => setFinancialDataModalVisible(false)}>
+            <Text style={localStyles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -197,6 +197,9 @@ const ProfileScreen = () => {
 const localStyles = StyleSheet.create({
   container: {
     backgroundColor: '#f0f0f0',
+    marginTop: -16,
+    marginLeft: -16,
+    marginRight: -16,
   },
   profileHeader: {
     flexDirection: 'row',
@@ -204,18 +207,22 @@ const localStyles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
   },
   profileImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     marginRight: 20,
   },
   profileDetails: {
     justifyContent: 'center',
   },
   profileName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   profileStatus: {
@@ -242,30 +249,39 @@ const localStyles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
+    borderRadius: 12,
     padding: 20,
-    borderRadius: 10,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
   },
   button: {
     backgroundColor: Colors.primary,
-    padding: 15,
     borderRadius: 10,
+    padding: 15,
     alignItems: 'center',
-    marginBottom: 10,
   },
   buttonText: {
     color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  cancelButton: {
+    marginTop: 10,
+    padding: 15,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: Colors.primary,
     fontSize: 16,
   },
 });

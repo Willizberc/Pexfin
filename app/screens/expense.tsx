@@ -71,7 +71,7 @@ const ExpenseScreen = () => {
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Total Expenses</Text>
-        <Text style={styles.totalExpense}>${totalExpense.toFixed(2)}</Text>
+        <Text style={styles.totalExpense}>${totalExpense.toLocaleString()}</Text>
         <ScrollView horizontal>
           <BarChart
             data={{
@@ -80,21 +80,19 @@ const ExpenseScreen = () => {
             }}
             width={screenWidth - 40}
             height={220}
-            yAxisLabel="$"
+            yAxisLabel=""
             chartConfig={{
               backgroundColor: 'transparent',
-              backgroundGradientFrom: 'transparent',
-              backgroundGradientTo: 'transparent',
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(8, 145, 178, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-              propsForDots: {
-                r: '6',
-                strokeWidth: '2',
-                stroke: '#ffa726',
+              backgroundGradientFrom: '#0891b2',
+              backgroundGradientTo: '#feb47b',
+              decimalPlaces: 1,
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 5) => `rgba(255, 255, 255, ${opacity})`,
+              barPercentage: 0.9,
+              propsForBackgroundLines: {
+                strokeWidth: 0.5,
+                stroke: 'rgba(255, 255, 255, 0.2)',
+                strokeDasharray: '4',
               },
             }}
             style={styles.chart}
@@ -133,7 +131,7 @@ const ExpenseScreen = () => {
               <Text style={styles.transactionTitle}>{item.description}</Text>
               <Text style={styles.transactionDate}>{new Date(item.date.seconds * 1000).toLocaleString()}</Text>
             </View>
-            <Text style={styles.transactionAmount}>-${item.amount.toFixed(2)}</Text>
+            <Text style={styles.transactionAmount}>-${item.amount.toLocaleString()}</Text>
           </View>
         )}
       />
@@ -168,6 +166,7 @@ const styles = StyleSheet.create({
   },
   chart: {
     marginTop: 20,
+    borderRadius: 10,
   },
   monthToggle: {
     backgroundColor: Colors.primary,
@@ -205,7 +204,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: Colors.transactionBackground,
+    // backgroundColor: Colors.transactionBackground,
     borderRadius: 8,
     marginBottom: 10,
   },
@@ -216,7 +215,7 @@ const styles = StyleSheet.create({
   },
   transactionDate: {
     fontSize: 14,
-    color: Colors.date,
+    // color: Colors.date,
   },
   transactionAmount: {
     fontSize: 18,

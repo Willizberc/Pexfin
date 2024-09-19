@@ -92,7 +92,7 @@ const HomeScreen = () => {
 
     const formatAmount = (type: string, amount: number) => {
         const sign = type === 'Income' ? '+' : '-';
-        return `${sign}$${amount.toFixed(2)}`;
+        return `${sign}$${amount.toLocaleString()}`;
     };
 
     return (
@@ -106,28 +106,28 @@ const HomeScreen = () => {
                     <Text style={styles.creditCardTitle}>Balance</Text>
                 </View>
                 <Text style={[styles.cardAmount, { fontSize: getFontSize(creditCardBalance) }]}>
-                    ${creditCardBalance.toFixed(2)}
+                    ${creditCardBalance.toLocaleString()}
                 </Text>
             </View>
 
             {/* Display income and expense cards */}
             <View style={styles.row}>
-                <TouchableOpacity style={styles.smallCard} onPress={() => router.push('screens/income')}>
+                <TouchableOpacity style={styles.smallCard} onPress={() => router.push('/screens/income')}>
                     <View style={styles.iconTitleContainer}>
                         <Ionicons name="trending-up-outline" size={34} color={Colors.icon} style={styles.icon} />
                         <Text style={styles.cardTitle}>Income</Text>
                     </View>
                     <Text style={[styles.smallCardAmount, { fontSize: getFontSize(incomeAmount) }]}>
-                        ${incomeAmount.toFixed(2)}
+                        ${incomeAmount.toLocaleString()}
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.smallCard} onPress={() => router.push('screens/expense')}>
+                <TouchableOpacity style={styles.smallCard} onPress={() => router.push('/screens/expense')}>
                     <View style={styles.iconTitleContainer}>
                         <Ionicons name="trending-down-outline" size={34} color={Colors.icon} style={styles.icon} />
                         <Text style={styles.cardTitle}>Expense</Text>
                     </View>
                     <Text style={[styles.smallCardAmount, { fontSize: getFontSize(expenseAmount) }]}>
-                        ${expenseAmount.toFixed(2)}
+                        ${expenseAmount.toLocaleString()}
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 15,
-        backgroundColor: Colors.transactionBackground,
+        // backgroundColor: Colors.transactionBackground,
         borderRadius: 8,
         marginBottom: 10,
     },
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     transactionAmount: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: Colors.transactionAmount,
+        // color: Colors.transactionAmount,
     },
 });
 
